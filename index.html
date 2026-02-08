@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<style> 
+body {
+  background-color: #ffccdd; /* light pink background */
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background 0.5s ease;
+}
+
+/* Header background image */
+header {
+  background: linear-gradient(45deg, #ff3366, #ff6b8b);
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  position: relative;
+}
+
+/* Back Button Styles */
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #ff3366;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  cursor: pointer;
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  5% { transform: scale(1.1); }
+  10% { transform: scale(1); }
+  15% { transform: scale(1.1); }
+  20% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.back-button:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+  background: #ff6b8b;
+}
+
+.back-button .tooltip {
+  position: absolute;
+  left: 70px;
+  background: white;
+  color: #ff3366;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+
+.back-button:hover .tooltip {
+  opacity: 1;
+}
+
+/* Center all h1, h2, h3, h4 */
+h1, h2, h3, h4 {
+  text-align: center;
+  color: red;
+  margin: 10px 0;
+}
+
+/* Container for Yes/No buttons */
+.vote-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin-top: 20px;
+  position: relative;
+  height: 120px;
+  overflow: visible;
+}
+
+/* Style for Yes/No boxes */
+.yes-box, .no-box {
+  background-color: white;
+  color: red;
+  font-size: 24px;
+  padding: 15px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  user-select: none;
+}
+
+.yes-box {
+  z-index: 2;
+  transform-origin: center;
+}
+
+.no-box:hover {
+  transform: scale(1.1);
+}
+
+.yes-box:hover {
+  transform: scale(1.1);
+}
+
+section {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+p {
+  text-align: center;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+/* Memories Page Styles (hidden initially) */
+#memoriesPage {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.celebration-message {
+  text-align: center;
+  color: #ff3366;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 60px 0 40px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.memories-title {
+  text-align: center;
+  color: #ff3366;
+  font-size: 28px;
+  margin: 30px 0;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #ff3366;
+  display: inline-block;
+}
+
+.gallery-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photo-frame {
+  background: white;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(255, 51, 102, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-frame:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(255, 51, 102, 0.4);
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff3366, #ff6b8b, #ff99aa, #ffccdd);
+  border-radius: 22px;
+  z-index: -1;
+  animation: borderGlow 3s infinite alternate;
+}
+
+@keyframes borderGlow {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(45deg, #ffccdd, #ff99aa);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: #ff3366;
+  transition: transform 0.3s ease;
+}
+
+.photo-frame:hover .photo-placeholder {
+  transform: scale(1.05);
+}
+
+.photo-caption {
+  text-align: center;
+  color: #ff3366;
+  font-size: 18px;
+  margin-top: 15px;
+  font-weight: bold;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  width: 100%;
+}
+
+/* Bouquet of Roses Styles - NEW */
+.bouquet-container {
+  text-align: center;
+  margin: 40px auto;
+  padding: 30px;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(255, 51, 102, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.bouquet-title {
+  color: #ff3366;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.roses-bouquet {
+  font-size: 60px;
+  line-height: 1.2;
+  margin: 20px 0;
+  animation: bouquetFloat 4s infinite ease-in-out;
+}
+
+@keyframes bouquetFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+.rose {
+  display: inline-block;
+  margin: 0 10px;
+  animation: roseGlow 3s infinite alternate;
+}
+
+@keyframes roseGlow {
+  0% { filter: drop-shadow(0 0 5px rgba(255, 51, 102, 0.5)); }
+  100% { filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.8)); }
+}
+
+.rose:nth-child(1) { color: #ff3366; animation-delay: 0s; }
+.rose:nth-child(2) { color: #ff6b8b; animation-delay: 0.2s; }
+.rose:nth-child(3) { color: #ff3366; animation-delay: 0.4s; }
+.rose:nth-child(4) { color: #ff6b8b; animation-delay: 0.6s; }
+.rose:nth-child(5) { color: #ff3366; animation-delay: 0.8s; }
+.rose:nth-child(6) { color: #ff6b8b; animation-delay: 1s; }
+.rose:nth-child(7) { color: #ff3366; animation-delay: 1.2s; }
+
+.bouquet-message {
+  color: #ff3366;
+  font-size: 20px;
+  margin-top: 20px;
+  font-style: italic;
+  padding: 15px;
+  background: rgba(255, 204, 221, 0.3);
+  border-radius: 15px;
+  line-height: 1.6;
+}
+
+.heart-decoration {
+  position: fixed;
+  font-size: 24px;
+  color: #ff3366;
+  opacity: 0.7;
+  z-index: -1;
+  animation: float 5s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+.footer-message {
+  text-align: center;
+  color: #ff3366;
+  font-size: 20px;
+  margin: 50px 0 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  font-style: italic;
+}
+
+/* Floating hearts positions */
+.heart1 { top: 10%; left: 10%; animation-delay: 0s; }
+.heart2 { top: 20%; right: 15%; animation-delay: 1s; }
+.heart3 { bottom: 30%; left: 20%; animation-delay: 2s; }
+.heart4 { bottom: 20%; right: 20%; animation-delay: 3s; }
+.heart5 { top: 40%; left: 5%; animation-delay: 4s; }
+</style>
+</head>
+
+<body>
+
+<!-- Back Button -->
+<button class="back-button" id="backButton">
+  ❤️
+  <span class="tooltip">Back to Valentine</span>
+</button>
+
+<!-- Valentine Page (visible initially) -->
+<div id="valentinePage">
+  <!-- Text above the picture -->
+  <h1>Are you a Heart Crystal? Because everytime I see you, my life increases, Be my VALENTINE? (Terraria reference)</h1>
+
+  <!-- Picture -->
+  <header>
+    <div style="text-align: center; background: rgba(255, 51, 102, 0.8); padding: 20px; border-radius: 10px;">
+      <h1 style="color: white; margin: 0;">MY BABY 💖</h1>
+      <p style="color: white; font-size: 18px;">This is where our photo would go!</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>I LOVE YOU SO MUCHHHHHHHHHHH!!!</h2>
+    <p><u>Happy Valentine's day</u> and <u>happy MOTMOT</u> my baby I love you so much! This is our second valentine's day together and celebrating 9 months YAYYAYAYAY!!! Thank you for being so loving in times when I felt unloving, unfeeling, unemotional, and unresponsive. There is just something deep within your soul that always manages to help me get back on my feet. I've seen it, I've had it, I've felt it, and I've adored it. As the song says, "Until the day the ocean doesn't touch the sand. Now and forever, I will be your man."</p> 
+  </section>
+
+  <section> 
+    <h4>what I'm trying to say is....</h4>
+    <h2>WILL YOU BE MY VALENTINE?</h2>
+
+    <!-- Yes / No section -->
+    <div class="vote-container">
+      <div class="yes-box" id="yesBox">Yes 😄</div>
+      <div class="no-box" id="noBox">No 😢</div>
+    </div>
+  </section>
+</div>
+
+<!-- Memories Page (hidden initially) -->
+<div id="memoriesPage">
+  <!-- Celebration Message -->
+  <div class="celebration-message">
+    I LOVE YOU BABY I LOVE YOU SO MUCHUHHUHUHUHUHU YAY ❤️💕💖
+  </div>
+  
+  <!-- Floating hearts -->
+  <div class="heart-decoration heart1">❤️</div>
+  <div class="heart-decoration heart2">💕</div>
+  <div class="heart-decoration heart3">💖</div>
+  <div class="heart-decoration heart4">💗</div>
+  <div class="heart-decoration heart5">💓</div>
+  
+  <!-- Memories Title -->
+  <h1 class="memories-title">OUR BEAUTIFUL MEMORIES TOGETHER 💞</h1>
+  
+  <!-- Photo Gallery -->
+  <div class="gallery-container">
+    <div class="photo-grid">
+      <!-- Memory 1 -->
+      <div class="photo-frame">
+         <img src="kiss.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Our First Kiss 💋</div>
+      </div>
+      
+      <!-- Memory 2 -->
+      <div class="photo-frame">
+        <img src="beach.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Beach Day Together 🌊</div>
+      </div>
+      
+      <!-- Memory 3 -->
+      <div class="photo-frame">
+        <img src="date.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Our first date 🎉</div>
+      </div>
+      
+      <!-- Memory 4 -->
+      <div class="photo-frame">
+        <img src="may.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">May US 🌸 </div>
+      </div>
+      
+      <!-- Memory 5 -->
+      <div class="photo-frame">
+         <img src="valentine.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">VALENTINE'S 💖</div>
+      </div>
+      
+      <!-- Memory 6 -->
+      <div class="photo-frame">
+        <img src="debut.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">DEBUT 🌱</div>
+      </div>
+      
+      <!-- Memory 7 -->
+      <div class="photo-frame">
+        <img src="adventure.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Adventures Together 🗺️</div>
+      </div>
+      
+      <!-- Memory 8 -->
+      <div class="photo-frame">
+        <img src="special.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Special Celebrations 🎂</div>
+      </div>
+      
+      <!-- Memory 9 -->
+      <div class="photo-frame">
+        <img src="future.jpg" alt="Our First Kiss" class="photo-placeholder">
+        <div class="photo-caption">Future Dreams Together ✨</div>
+      </div>
+    </div>
+    
+    <!-- Bouquet of Roses - ADDED BELOW PHOTO GRID -->
+    <div class="bouquet-container">
+      <h2 class="bouquet-title">A Bouquet of Roses For You 💐</h2>
+      <div class="roses-bouquet">
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+        <span class="rose">🌹</span>
+      </div>
+      <p class="bouquet-message">
+        Each rose represents my love for you - beautiful, timeless, and forever blooming. 
+        Just like these roses, my love for you will never wither. You are the most beautiful 
+        flower in my garden of life. 💖
+      </p>
+    </div>
+  </div>
+  
+  <!-- Footer Message -->
+  <div class="footer-message">
+    "Every moment with you is a memory I cherish forever. I can't wait to make many more memories together! I love you endlessly. ❤️"
+  </div>
+</div>
+
+<script>
+let clickCount = 0;
+let yesScale = 1;
+const yesBox = document.getElementById('yesBox');
+const noBox = document.getElementById('noBox');
+const backButton = document.getElementById('backButton');
+const valentinePage = document.getElementById('valentinePage');
+const memoriesPage = document.getElementById('memoriesPage');
+
+// Function to show memories page
+function showMemoriesPage() {
+  valentinePage.style.display = 'none';
+  memoriesPage.style.display = 'block';
+  backButton.style.display = 'flex';
+  document.body.style.background = 'linear-gradient(135deg, #ffccdd 0%, #ffb6c1 100%)';
+  
+  // Add floating hearts
+  createFloatingHearts();
+  createConfetti();
+}
+
+// Function to go back to valentine page
+function goBackToValentine() {
+  memoriesPage.style.display = 'none';
+  valentinePage.style.display = 'block';
+  backButton.style.display = 'none';
+  document.body.style.background = '#ffccdd';
+  
+  // Clean up floating hearts
+  const hearts = document.querySelectorAll('.heart-decoration');
+  hearts.forEach(heart => {
+    if (!heart.classList.contains('heart1') && 
+        !heart.classList.contains('heart2') && 
+        !heart.classList.contains('heart3') && 
+        !heart.classList.contains('heart4') && 
+        !heart.classList.contains('heart5')) {
+      heart.remove();
+    }
+  });
+}
+
+// Function to create floating hearts
+function createFloatingHearts() {
+  // Create additional floating hearts
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => createHeart(), i * 300);
+  }
+  
+  // Create hearts on click
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.photo-frame') || e.target === backButton) return;
+    
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.style.position = 'fixed';
+    heart.style.left = e.clientX + 'px';
+    heart.style.top = e.clientY + 'px';
+    heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+    heart.style.color = '#ff3366';
+    heart.style.opacity = '0.8';
+    heart.style.zIndex = '1000';
+    heart.style.pointerEvents = 'none';
+    heart.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out forwards`;
+    
+    document.body.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 3000);
+  });
+}
+
+// Function to create a single floating heart
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.innerHTML = '❤️';
+  heart.style.position = 'fixed';
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.top = Math.random() * 100 + 'vh';
+  heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+  heart.style.color = '#ff3366';
+  heart.style.opacity = Math.random() * 0.5 + 0.3;
+  heart.style.zIndex = '-1';
+  heart.style.pointerEvents = 'none';
+  heart.style.animation = `float ${Math.random() * 5 + 5}s infinite ease-in-out`;
+  heart.style.animationDelay = Math.random() * 2 + 's';
+  
+  document.body.appendChild(heart);
+}
+
+// Function to create confetti
+function createConfetti() {
+  const colors = ['#ff3366', '#ff6b8b', '#ff99aa', '#ffccdd'];
+  const confettiCount = 30;
+  
+  for (let i = 0; i < confettiCount; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.style.position = 'fixed';
+      confetti.style.width = '10px';
+      confetti.style.height = '10px';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.top = '-10px';
+      confetti.style.zIndex = '9999';
+      confetti.style.opacity = '0.8';
+      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+      
+      document.body.appendChild(confetti);
+      
+      // Animation
+      const animation = confetti.animate([
+        { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+        { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+      ], {
+        duration: 1000 + Math.random() * 1000,
+        easing: 'cubic-bezier(0.1, 0.8, 0.9, 0.1)'
+      });
+      
+      animation.onfinish = () => confetti.remove();
+    }, i * 100);
+  }
+}
+
+// Back button event listener
+backButton.addEventListener('click', goBackToValentine);
+
+// No button click event
+noBox.addEventListener('click', function() {
+  clickCount++;
+  
+  // Increase the scale of Yes box
+  yesScale += 0.3;
+  yesBox.style.transform = `scale(${yesScale})`;
+  
+  // Move Yes box to cover more space
+  yesBox.style.zIndex = '10';
+  
+  // Make the text bigger too
+  const currentFontSize = 24 + (clickCount * 8);
+  yesBox.style.fontSize = `${currentFontSize}px`;
+  
+  // Increase padding to match the scale
+  yesBox.style.padding = `${15 + (clickCount * 5)}px ${30 + (clickCount * 10)}px`;
+  
+  // Change No box text based on click count
+  const noMessages = [
+    "No 😢",
+    "Are you sure? 😔",
+    "Please? 🥺",
+    "Think about it! 💔",
+    "I'll be sad... 😭",
+    "Pretty please? 🥹",
+    "You're breaking my heart 💘",
+    "Just say yes! ❤️",
+    "I love you! 💕",
+    "YES is the right answer! 😍"
+  ];
+  
+  // Cycle through messages or stay on last one
+  const messageIndex = Math.min(clickCount - 1, noMessages.length - 1);
+  noBox.textContent = noMessages[messageIndex];
+  
+  // Make No box smaller as Yes gets bigger
+  const noScale = Math.max(0.5, 1 - (clickCount * 0.1));
+  noBox.style.transform = `scale(${noScale})`;
+  
+  // If Yes has gotten very big, show celebration
+  if (clickCount >= 5) {
+    yesBox.textContent = "YES! 😍❤️💕";
+    yesBox.style.backgroundColor = "#ff6b8b";
+    yesBox.style.color = "white";
+  }
+  
+  // If clicked enough times, automatically "click" Yes
+  if (clickCount >= 8) {
+    setTimeout(() => {
+      yesBox.click();
+    }, 300);
+  }
+});
+
+// Yes button click event
+yesBox.addEventListener('click', function() {
+  // Create celebration effect before switching pages
+  yesBox.style.transform = `scale(${yesScale * 1.5})`;
+  yesBox.style.transition = 'all 0.5s ease';
+  yesBox.style.backgroundColor = "#ff3366";
+  yesBox.style.color = "white";
+  yesBox.style.boxShadow = "0 0 30px rgba(255, 0, 100, 0.7)";
+  yesBox.textContent = "YES! I LOVE YOU TOO! 💖";
+  
+  // After a short delay, show memories page
+  setTimeout(() => {
+    showMemoriesPage();
+  }, 800);
+});
+
+// Add hover effect for Yes box
+yesBox.addEventListener('mouseenter', function() {
+  yesBox.style.transform = `scale(${yesScale * 1.1})`;
+});
+
+yesBox.addEventListener('mouseleave', function() {
+  yesBox.style.transform = `scale(${yesScale})`;
+});
+
+// Add click effect to photo frames
+document.addEventListener('click', function(e) {
+  if (e.target.closest('.photo-frame') && memoriesPage.style.display === 'block') {
+    const frame = e.target.closest('.photo-frame');
+    frame.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      frame.style.transform = '';
+    }, 200);
+  }
+});
+
+// Make back button pulse when hovering over it
+backButton.addEventListener('mouseenter', function() {
+  this.style.animation = 'heartbeat 0.8s infinite';
+});
+
+backButton.addEventListener('mouseleave', function() {
+  this.style.animation = 'heartbeat 1.5s infinite';
+});
+
+// Add rose animation on bouquet click
+document.addEventListener('click', function(e) {
+  if (e.target.closest('.bouquet-container') && memoriesPage.style.display === 'block') {
+    // Create floating rose petals
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => {
+        const petal = document.createElement('div');
+        petal.innerHTML = '🌹';
+        petal.style.position = 'fixed';
+        petal.style.left = e.clientX + 'px';
+        petal.style.top = e.clientY + 'px';
+        petal.style.fontSize = '24px';
+        petal.style.color = '#ff3366';
+        petal.style.opacity = '0.9';
+        petal.style.zIndex = '1000';
+        petal.style.pointerEvents = 'none';
+        petal.style.animation = `float ${Math.random() * 2 + 2}s ease-in-out forwards`;
+        
+        document.body.appendChild(petal);
+        
+        setTimeout(() => {
+          petal.remove();
+        }, 3000);
+      }, i * 100);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
